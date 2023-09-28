@@ -7,12 +7,11 @@ import axios from 'axios';
 import { ReportProps } from './reportProps';
 
 const ReportComponent: React.FC<ReportProps> = ({ reportId }) => {
-
+    const [embeddedApiResponse, setEmbeddedApiResponse] = useState<{ embedUrl: string | undefined, accessToken: string | undefined }>({ embedUrl: undefined, accessToken: undefined });
     const [embeddedReport, setEmbeddedReport] = useState<Report>();
     const reportDomRef = useRef<HTMLDivElement>(null);
     const loaderDomRef = useRef<HTMLDivElement>(null);
-
-    const [embeddedApiResponse, setEmbeddedApiResponse] = useState<{ embedUrl: string | undefined, accessToken: string | undefined }>({ embedUrl: undefined, accessToken: undefined });
+    const apiUrl = 'https://localhost:7171/api/Authentication/GetToken/';
     useEffect(() => {
         const reportElement = reportDomRef.current;
         if (reportElement) reportElement.style.visibility = 'hidden';
@@ -49,7 +48,7 @@ const ReportComponent: React.FC<ReportProps> = ({ reportId }) => {
                 'Access-Control-Allow-Origin': '*'
             }
         };
-        axios.get(`https://localhost:7171/api/Authentication/GetToken/${reportId}`, config)
+        axios.get(`${apiUrl}${reportId}`, config)
             .then(({ data }) => {
                 setEmbeddedApiResponse({
                     embedUrl: data.EmbedReport[0].EmbedUrl,
