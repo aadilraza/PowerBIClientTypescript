@@ -22,7 +22,7 @@ const App = () => {
     <div className="App">
       {/* <ReportComponent reportId={tblReportId} embedUrl={tblReportEmbedUrl} embedToken={embedToken} /> */}
       {/* <ReportComponent reportId={areaChartReportId} embedUrl={areaChartReportEmbedUrl} embedToken={embedToken} /> */}
-      <ReportComponent reportId={areaChartOneReportEmbedUrl} embedUrl={areaChartOneReportEmbedUrl} embedToken={""} />
+      <ReportComponent reportId={areaChartOneReportId} />
     </div>
   );
 }
