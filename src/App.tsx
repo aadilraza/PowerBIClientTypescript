@@ -4,14 +4,14 @@ import './App.css';
 import ReportComponent from './components/report/report';
 
 const App = () => {
-  const tblReportId = '232d9ad2-24ff-4947-aaac-2443fdeb7322';
-  const areaChartReportId = 'f2774993-8d1a-4034-9c02-feca7bd5d8be';
+  const tblReportId = '96642825-6f98-4d7a-aa02-d710c1e66149';
+  const dashBoardDownloadedReportId = 'c371310a-f123-455c-a930-03e97e7ac119';
   const areaChartOneReportId = 'fadf9640-5c43-4076-8190-9a01e706a032';
 
   return (
     <div className="App">
-      {/* <ReportComponent reportId={tblReportId} embedUrl={tblReportEmbedUrl} embedToken={embedToken} /> */}
-      {/* <ReportComponent reportId={areaChartReportId} embedUrl={areaChartReportEmbedUrl} embedToken={embedToken} /> */}
+      <ReportComponent reportId={tblReportId} />
+      <ReportComponent reportId={dashBoardDownloadedReportId} />
       <ReportComponent reportId={areaChartOneReportId} />
     </div>
   );
