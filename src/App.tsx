@@ -10,9 +10,10 @@ const App = () => {
 
   return (
     <div className="App">
-      <ReportComponent reportId={tblReportId} />
+      {/* <ReportComponent reportId={tblReportId} />
       <ReportComponent reportId={dashBoardDownloadedReportId} />
-      <ReportComponent reportId={areaChartOneReportId} />
+      <ReportComponent reportId={areaChartOneReportId} /> */}
+      <ReportComponent reportId={""} />
     </div>
   );
 }

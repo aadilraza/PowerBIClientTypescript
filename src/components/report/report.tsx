@@ -7,11 +7,11 @@ import axios from 'axios';
 import { ReportProps } from './reportProps';
 
 const ReportComponent: React.FC<ReportProps> = ({ reportId }) => {
-    const [embeddedApiResponse, setEmbeddedApiResponse] = useState<{ embedUrl: string | undefined, accessToken: string | undefined }>({ embedUrl: undefined, accessToken: undefined });
+    const [embeddedApiResponse, setEmbeddedApiResponse] = useState<{ embedUrl: string | undefined, accessToken: string | undefined, reportId: string | undefined }>({ embedUrl: undefined, accessToken: undefined, reportId : undefined });
     const [embeddedReport, setEmbeddedReport] = useState<Report>();
     const reportDomRef = useRef<HTMLDivElement>(null);
     const loaderDomRef = useRef<HTMLDivElement>(null);
-    const apiUrl = 'https://localhost:7171/api/Authentication/GetToken/';
+    const apiUrl = 'https://localhost:7232/api/Home/GetEmbedTokenURL';
     useEffect(() => {
         const reportElement = reportDomRef.current;
         if (reportElement) reportElement.style.visibility = 'hidden';
@@ -48,11 +48,13 @@ const ReportComponent: React.FC<ReportProps> = ({ reportId }) => {
                 'Access-Control-Allow-Origin': '*'
             }
         };
-        axios.get(`${apiUrl}${reportId}`, config)
+        axios.get(`${apiUrl}?tenantId=1`, config)
             .then(({ data }) => {
+                debugger;
                 setEmbeddedApiResponse({
-                    embedUrl: data.EmbedReport[0].EmbedUrl,
-                    accessToken: data.EmbedToken.Token
+                    embedUrl: data.embedUrl,
+                    accessToken: data.token,
+                    reportId : data.reportId
                 });
             })
             .catch(error => console.error(error));
@@ -60,7 +62,7 @@ const ReportComponent: React.FC<ReportProps> = ({ reportId }) => {
 
     let embedConfiguration = {
         type: 'report',
-        id: reportId,
+        id: embeddedApiResponse?.reportId,
         embedUrl: embeddedApiResponse?.embedUrl,
         accessToken: embeddedApiResponse?.accessToken,
         tokenType: models.TokenType.Embed,
