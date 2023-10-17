@@ -48,7 +48,7 @@ const ReportComponent: React.FC<ReportProps> = ({ reportName, tenanatId }) => {
                 'Access-Control-Allow-Origin': '*'
             }
         };
-        const _apiUrl = `${apiUrl}?tenantId=${tenanatId}?reportName=${reportName}`;
+        const _apiUrl = `${apiUrl}?tenantId=${tenanatId}&reportName=${reportName}`;
         axios.get(_apiUrl, config)
             .then(({ data }) => {
                 setEmbeddedApiResponse({
