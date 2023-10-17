@@ -1,3 +1,4 @@
 export interface ReportProps {
-    reportId: string;
+    reportName: string;
+    tenanatId: string;
 }

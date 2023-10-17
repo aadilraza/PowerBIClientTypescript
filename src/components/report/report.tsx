@@ -6,7 +6,7 @@ import './report.css';
 import axios from 'axios';
 import { ReportProps } from './reportProps';
 
-const ReportComponent: React.FC<ReportProps> = ({ reportId }) => {
+const ReportComponent: React.FC<ReportProps> = ({ reportName, tenanatId }) => {
     const [embeddedApiResponse, setEmbeddedApiResponse] = useState<{ embedUrl: string | undefined, accessToken: string | undefined, reportId: string | undefined }>({ embedUrl: undefined, accessToken: undefined, reportId : undefined });
     const [embeddedReport, setEmbeddedReport] = useState<Report>();
     const reportDomRef = useRef<HTMLDivElement>(null);
@@ -48,9 +48,9 @@ const ReportComponent: React.FC<ReportProps> = ({ reportId }) => {
                 'Access-Control-Allow-Origin': '*'
             }
         };
-        axios.get(`${apiUrl}?tenantId=1`, config)
+        const _apiUrl = `${apiUrl}?tenantId=${tenanatId}?reportName=${reportName}`;
+        axios.get(_apiUrl, config)
             .then(({ data }) => {
-                debugger;
                 setEmbeddedApiResponse({
                     embedUrl: data.embedUrl,
                     accessToken: data.token,
