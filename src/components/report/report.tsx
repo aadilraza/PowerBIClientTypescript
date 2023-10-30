@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { PowerBIEmbed } from 'powerbi-client-react';
-import { Report, models } from 'powerbi-client';
+import { IReportEmbedConfiguration, Report, models } from 'powerbi-client';
 import loaderGif from '../loader/giphy.gif';
 import './report.css';
 import axios from 'axios';
@@ -12,6 +12,16 @@ const ReportComponent: React.FC<ReportProps> = ({ reportId }) => {
     const reportDomRef = useRef<HTMLDivElement>(null);
     const loaderDomRef = useRef<HTMLDivElement>(null);
     const apiUrl = 'https://localhost:7171/api/Authentication/GetToken/';
+    const basicFilter: models.IBasicFilter = {
+        $schema: "http://powerbi.com/product/schema#basic",
+        filterType: models.FilterType.Basic,
+        target: {
+            table: "AssetCount",
+            column: "UserId"
+        },
+        operator: "In",
+        values: [5],
+    };
     useEffect(() => {
         const reportElement = reportDomRef.current;
         if (reportElement) reportElement.style.visibility = 'hidden';
@@ -23,23 +33,33 @@ const ReportComponent: React.FC<ReportProps> = ({ reportId }) => {
     }, []);
 
     useEffect(() => {
-        embeddedReport?.on("loaded", () => {
-            console.info("Report Loaded");
-            const reportElement = reportDomRef.current;
-            if (reportElement) reportElement.style.visibility = 'visible';
+        if (embeddedReport) {
+            embeddedReport.on("loaded", () => {
+                console.info("Report Loaded");
+                callFilter();
+                const reportElement = reportDomRef.current;
+                const loaderElement = loaderDomRef.current;
+                if (reportElement){
+                    reportElement.style.visibility = 'visible';
+                }
+                if (loaderElement){
+                    loaderElement.style.display = 'none';
+                }
+            });
+            embeddedReport.on("rendered", () => {
+                console.info("Report Rendered");
+            });
+        }
 
-            const loaderElement = loaderDomRef.current;
-            if (loaderElement) loaderElement.style.display = 'none';
-        });
-        embeddedReport?.on("rendered", () => {
-            console.info("Report Rendered");
-        });
+        async function callFilter(){
+            await embeddedReport?.updateFilters(models.FiltersOperations.Add, [basicFilter])
+            .catch(x => console.log('Error: ', x));
+        }
         return () => {
             embeddedReport?.off("loaded");
             embeddedReport?.off("rendered");
         };
     }, [embeddedReport]);
-
 
     const getEmbedToken = () => {
         const config = {
@@ -57,24 +77,24 @@ const ReportComponent: React.FC<ReportProps> = ({ reportId }) => {
             })
             .catch(error => console.error(error));
     }
-
-    let embedConfiguration = {
+    let embedConfiguration: IReportEmbedConfiguration = {
         type: 'report',
         id: reportId,
         embedUrl: embeddedApiResponse?.embedUrl,
         accessToken: embeddedApiResponse?.accessToken,
         tokenType: models.TokenType.Embed,
+        //filters: [basicFilter],
         settings: {
             panes: {
                 filters: {
+                    visible: false,
                     expanded: false,
-                    visible: false
                 }
             },
             background: models.BackgroundType.Transparent,
-            filterPaneEnabled: true,
+            filterPaneEnabled: false,
             navContentPaneEnabled: false
-        },
+        }
         // eventHooks: {
         //     accessTokenProvider: getEmbedToken
         // }
