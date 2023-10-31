@@ -6,22 +6,12 @@ import './report.css';
 import axios from 'axios';
 import { ReportProps } from './reportProps';
 
-const ReportComponent: React.FC<ReportProps> = ({ reportId }) => {
+const ReportComponent: React.FC<ReportProps> = ({ reportId, basicFilter }) => {
     const [embeddedApiResponse, setEmbeddedApiResponse] = useState<{ embedUrl: string | undefined, accessToken: string | undefined }>({ embedUrl: undefined, accessToken: undefined });
     const [embeddedReport, setEmbeddedReport] = useState<Report>();
     const reportDomRef = useRef<HTMLDivElement>(null);
     const loaderDomRef = useRef<HTMLDivElement>(null);
     const apiUrl = 'https://localhost:7171/api/Authentication/GetToken/';
-    const basicFilter: models.IBasicFilter = {
-        $schema: "http://powerbi.com/product/schema#basic",
-        filterType: models.FilterType.Basic,
-        target: {
-            table: "AssetCount",
-            column: "UserId"
-        },
-        operator: "In",
-        values: [5],
-    };
     useEffect(() => {
         const reportElement = reportDomRef.current;
         if (reportElement) reportElement.style.visibility = 'hidden';

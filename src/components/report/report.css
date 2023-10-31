@@ -6,3 +6,7 @@
   #overlay{
     margin-top: 200px;
   }
+
+  .vcHeader .themableBackgroundColorSolid{
+    display: none;
+  }
