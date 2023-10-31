@@ -75,6 +75,11 @@ const ReportComponent: React.FC<ReportProps> = ({ reportId, basicFilter }) => {
         tokenType: models.TokenType.Embed,
         //filters: [basicFilter],
         settings: {
+            visualSettings : {
+                visualHeaders : [{
+                    settings:{visible : false}
+                }]
+            },
             panes: {
                 filters: {
                     visible: false,
