@@ -40,16 +40,16 @@ const ReportComponent: React.FC<ReportProps> = ({ reportId, basicFilter }) => {
                 console.info("Report Rendered");
             });
         }
-
-        async function callFilter(){
-            await embeddedReport?.updateFilters(models.FiltersOperations.Add, [basicFilter])
-            .catch(x => console.log('Error: ', x));
-        }
         return () => {
             embeddedReport?.off("loaded");
             embeddedReport?.off("rendered");
         };
     }, [embeddedReport]);
+
+    const callFilter = async() => {
+        await embeddedReport?.updateFilters(models.FiltersOperations.Add, [basicFilter])
+        .catch(x => console.log('Error: ', x));
+    }
 
     const getEmbedToken = () => {
         const config = {
@@ -90,9 +90,6 @@ const ReportComponent: React.FC<ReportProps> = ({ reportId, basicFilter }) => {
             filterPaneEnabled: false,
             navContentPaneEnabled: false
         }
-        // eventHooks: {
-        //     accessTokenProvider: getEmbedToken
-        // }
     };
 
     return (
