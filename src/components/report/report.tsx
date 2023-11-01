@@ -29,10 +29,10 @@ const ReportComponent: React.FC<ReportProps> = ({ reportId, basicFilter }) => {
                 callFilter();
                 const reportElement = reportDomRef.current;
                 const loaderElement = loaderDomRef.current;
-                if (reportElement){
+                if (reportElement) {
                     reportElement.style.visibility = 'visible';
                 }
-                if (loaderElement){
+                if (loaderElement) {
                     loaderElement.style.display = 'none';
                 }
             });
@@ -46,9 +46,12 @@ const ReportComponent: React.FC<ReportProps> = ({ reportId, basicFilter }) => {
         };
     }, [embeddedReport]);
 
-    const callFilter = async() => {
-        await embeddedReport?.updateFilters(models.FiltersOperations.Add, [basicFilter])
-        .catch(x => console.log('Error: ', x));
+    const callFilter = async () => {
+        try {
+            await embeddedReport?.updateFilters(models.FiltersOperations.Add, [basicFilter])
+        } catch (error) {
+            console.log('Error: ', error)
+        }
     }
 
     const getEmbedToken = () => {
@@ -67,6 +70,7 @@ const ReportComponent: React.FC<ReportProps> = ({ reportId, basicFilter }) => {
             })
             .catch(error => console.error(error));
     }
+    
     let embedConfiguration: IReportEmbedConfiguration = {
         type: 'report',
         id: reportId,
@@ -75,9 +79,9 @@ const ReportComponent: React.FC<ReportProps> = ({ reportId, basicFilter }) => {
         tokenType: models.TokenType.Embed,
         //filters: [basicFilter],
         settings: {
-            visualSettings : {
-                visualHeaders : [{
-                    settings:{visible : false}
+            visualSettings: {
+                visualHeaders: [{
+                    settings: { visible: false }
                 }]
             },
             panes: {
