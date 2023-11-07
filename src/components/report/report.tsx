@@ -11,7 +11,8 @@ const ReportComponent: React.FC<ReportProps> = ({ reportId, basicFilter }) => {
     const [embeddedReport, setEmbeddedReport] = useState<Report>();
     const reportDomRef = useRef<HTMLDivElement>(null);
     const loaderDomRef = useRef<HTMLDivElement>(null);
-    const apiUrl = 'https://localhost:7171/api/Authentication/GetToken/';
+    const locallyDeployedApi = 'http://localhost:86';
+    const apiUrl = `${locallyDeployedApi}/api/Authentication/GetToken/`;
     useEffect(() => {
         const reportElement = reportDomRef.current;
         if (reportElement) reportElement.style.visibility = 'hidden';
