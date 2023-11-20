@@ -6,7 +6,7 @@ import './report.css';
 import axios from 'axios';
 import { ReportProps } from './reportProps';
 
-const ReportComponent: React.FC<ReportProps> = ({ reportId, basicFilter }) => {
+const ReportComponent: React.FC<ReportProps> = ({ reportId, filter }) => {
     const [embeddedApiResponse, setEmbeddedApiResponse] = useState<{ embedUrl: string | undefined, accessToken: string | undefined }>({ embedUrl: undefined, accessToken: undefined });
     const [embeddedReport, setEmbeddedReport] = useState<Report>();
     const reportDomRef = useRef<HTMLDivElement>(null);
@@ -27,7 +27,8 @@ const ReportComponent: React.FC<ReportProps> = ({ reportId, basicFilter }) => {
         if (embeddedReport) {
             embeddedReport.on("loaded", () => {
                 console.info("Report Loaded");
-                callFilter();
+                getVisuals();
+                callVisualFilter();
                 const reportElement = reportDomRef.current;
                 const loaderElement = loaderDomRef.current;
                 if (reportElement) {
@@ -47,11 +48,26 @@ const ReportComponent: React.FC<ReportProps> = ({ reportId, basicFilter }) => {
         };
     }, [embeddedReport]);
 
-    const callFilter = async () => {
+    const callVisualFilter = async () => {
+        // Retrieve the page collection and get the visuals for the active page.
         try {
-            await embeddedReport?.updateFilters(models.FiltersOperations.Add, [basicFilter])
-        } catch (error) {
-            console.log('Error: ', error)
+            const pages = await embeddedReport?.getPages();
+            // Retrieve the active page.
+            if (pages) {
+                const page = pages.filter(function (page) {
+                    return page.isActive
+                })[0];
+                const visuals = await page.getVisuals();
+                // Retrieve the target visual.
+                const multiRowCardVisuals = visuals.filter(x => x.type === "multiRowCard");
+                for (const visual of multiRowCardVisuals) {
+                    // Add the filter to the visual's filters.
+                    await visual.updateFilters(models.FiltersOperations.Add, [filter]);
+                }
+            }
+        }
+        catch (errors) {
+            console.log(errors);
         }
     }
 
@@ -71,7 +87,33 @@ const ReportComponent: React.FC<ReportProps> = ({ reportId, basicFilter }) => {
             })
             .catch(error => console.error(error));
     }
-    
+
+    const getVisuals = async () => {
+        // Retrieve the page collection and get the visuals for the active page.
+        try {
+            const pages = await embeddedReport?.getPages();
+            if (pages) {
+                let page = pages.filter(function (page) {
+                    return page.isActive
+                })[0];
+
+                const visuals = await page.getVisuals();
+                console.log(
+                    visuals.map(function (visual) {
+                        return {
+                            name: visual.name,
+                            type: visual.type,
+                            title: visual.title,
+                            layout: visual.layout
+                        };
+                    }));
+            }
+        }
+        catch (errors) {
+            console.log(errors);
+        }
+    }
+
     let embedConfiguration: IReportEmbedConfiguration = {
         type: 'report',
         id: reportId,
