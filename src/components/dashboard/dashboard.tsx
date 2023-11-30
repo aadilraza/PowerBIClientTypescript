@@ -94,7 +94,7 @@ const DashboardComponent: React.FC<DashboardProps> = ({ dashboardId }) => {
             </div>
             <div ref={reportDomRef}>
                 <PowerBIEmbed
-                    cssClassName="embed-report"
+                    cssClassName="embed-dashboard"
                     embedConfig={embedConfiguration}
                     getEmbeddedComponent={(embeddedDashboard) => {
                         setEmbeddedDashboord(embeddedDashboard as Dashboard);
