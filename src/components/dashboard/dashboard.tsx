@@ -6,13 +6,18 @@ import './dashboard.css';
 import axios from 'axios';
 import { DashboardProps } from './dashboardProps';
 
-const DashboardComponent: React.FC<DashboardProps> = ({ dashboardId }) => {
-    const [embeddedApiResponse, setEmbeddedApiResponse] = useState<{ embedUrl: string | undefined, accessToken: string | undefined }>({ embedUrl: undefined, accessToken: undefined });
+type DashboardDetail = {
+    embedUrl: string | undefined;
+    accessToken: string | undefined;
+    dashboardId: string | undefined;
+}
+const DashboardComponent: React.FC<DashboardProps> = ({ dashboardName }) => {
+    const [embeddedApiResponse, setEmbeddedApiResponse] = useState<DashboardDetail>({ embedUrl: undefined, accessToken: undefined, dashboardId: undefined });
     const [embeddedDashboard, setEmbeddedDashboord] = useState<Dashboard>();
     const reportDomRef = useRef<HTMLDivElement>(null);
     const loaderDomRef = useRef<HTMLDivElement>(null);
-    const locallyDeployedApi = 'http://localhost:86';
-    const apiUrl = `${locallyDeployedApi}/api/Authentication/GetToken/Dashboard/`;
+    const locallyDeployedApi = 'https://qa-evm4-b.irsavideo.com/api/v1/PbiEmbed/Token/Dashboard';
+    const apiUrl = `${locallyDeployedApi}/${dashboardName}/1a1a5390-0963-4465-8db0-1fdcf8a3a218`;
     useEffect(() => {
         const dashboardElement = reportDomRef.current;
         if (dashboardElement) dashboardElement.style.visibility = 'hidden';
@@ -53,11 +58,12 @@ const DashboardComponent: React.FC<DashboardProps> = ({ dashboardId }) => {
                 'Access-Control-Allow-Origin': '*'
             }
         };
-        axios.get(`${apiUrl}${dashboardId}`, config)
+        axios.get(`${apiUrl}`, config)
             .then(({ data }) => {
                 setEmbeddedApiResponse({
                     embedUrl: data.EmbedDashboard[0].EmbedUrl,
-                    accessToken: data.EmbedToken.Token
+                    accessToken: data.EmbedToken.Token,
+                    dashboardId: data.EmbedDashboard[0].DashboardId
                 });
             })
             .catch(error => console.error(error));
@@ -65,7 +71,7 @@ const DashboardComponent: React.FC<DashboardProps> = ({ dashboardId }) => {
 
     let embedConfiguration: IDashboardEmbedConfiguration = {
         type: 'dashboard',
-        id: dashboardId,
+        id: embeddedApiResponse.dashboardId,
         embedUrl: embeddedApiResponse?.embedUrl,
         accessToken: embeddedApiResponse?.accessToken,
         tokenType: models.TokenType.Embed,
@@ -89,9 +95,9 @@ const DashboardComponent: React.FC<DashboardProps> = ({ dashboardId }) => {
 
     return (
         <div id="container">
-            <div id="overlay" ref={loaderDomRef}>
+            {/* <div id="overlay" ref={loaderDomRef}>
                 <img id="spinner" alt="Alternate Text" src={loaderGif} />
-            </div>
+            </div> */}
             <div ref={reportDomRef}>
                 <PowerBIEmbed
                     cssClassName="embed-dashboard"

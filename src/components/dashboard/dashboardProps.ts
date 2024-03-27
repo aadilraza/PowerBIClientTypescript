@@ -1,3 +1,4 @@
 export interface DashboardProps {
-    dashboardId: string;
+    dashboardName: string;
+    className: string;
 }

@@ -6,23 +6,32 @@ import DashboardComponent from './components/dashboard/dashboard';
 import { models } from 'powerbi-client';
 
 const App = () => {
-  const dashboardReportId = 'f4038630-867b-4d7b-9147-6882a6a8fe06';
-  const dashboardId = 'b65a7389-f34f-45af-ae98-035f5eecfe95';
-  const filter: models.IBasicFilter = {
+  let filter: models.IBasicFilter = {
     $schema: "http://powerbi.com/product/schema#basic",
     filterType: models.FilterType.Basic,
     target: {
-        table: "AssetStatus",
-        column: "UserId"
+      table: "AssetStatus",
+      column: "UserId"
     },
     operator: "In",
     values: [3],
-};
+  };
+
+  const UnitStatusDashboardName = "UnitStatusDashboard";
+  const MyCountsReportNames = "My Asset Counts";
+  const AllCountsReportNames = "All Asset Counts";
+  const AssetCategorizationByDate = "Asset Categorization By Date";
+  const MyCountsReportNamesCssClass = "report-my-counts";
+  const AllCountsReportNamesCssClass = "report-all-counts";
+  const UnitStatusDashboardNameCssClass = "embed-dashboard";
+  const AssetCategorizationByDateCssClass = "report-asset-categorization-by-date";
 
   return (
     <div className="App">
-      {/* <ReportComponent reportId={dashboardReportId} filter={filter}/> */}
-      <DashboardComponent dashboardId={dashboardId} />
+      <DashboardComponent dashboardName={UnitStatusDashboardName} className={UnitStatusDashboardNameCssClass} />
+      <ReportComponent reportName={AllCountsReportNames} className={AllCountsReportNamesCssClass} />
+      <ReportComponent reportName={AssetCategorizationByDate} className={AssetCategorizationByDateCssClass} /> 
+      <ReportComponent reportName={MyCountsReportNames} filter={filter} className={MyCountsReportNamesCssClass} />
     </div>
   );
 }

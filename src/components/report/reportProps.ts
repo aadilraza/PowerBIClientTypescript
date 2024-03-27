@@ -1,6 +1,7 @@
 import { models } from "powerbi-client";
 
 export interface ReportProps {
-    reportId: string;
-    filter: models.IBasicFilter;
+    reportName: string;
+    filter?: models.IBasicFilter;
+    className : string;
 }
